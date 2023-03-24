@@ -1,0 +1,56 @@
+﻿@inherits LayoutComponentBase
+
+@using BlazorSpinner
+
+<MudThemeProvider Theme="customDark"/>
+
+<MudDialogProvider
+    FullWidth="true"
+    MaxWidth="MaxWidth.ExtraSmall"
+    CloseButton="true"
+    DisableBackdropClick="true"
+    Position="DialogPosition.Center"
+    CloseOnEscapeKey="true"
+/>
+
+<MudSnackbarProvider />
+<Spinner></Spinner>
+
+<MudScrollToTop>
+    <MudFab Color="Color.Info"  Icon="@Icons.Material.Filled.ArrowCircleUp" />
+</MudScrollToTop>
+
+<style>
+    html, main {
+        background-color: rgb(20, 20, 20);
+    }
+</style>
+
+<main> @Body </main>
+
+@code {
+    MudTheme customDark = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Black = "#27272f",
+            Background = "#32333d",
+            BackgroundGrey = "#27272f",
+            Surface = "rgba(30, 30, 30, 1)",
+            DrawerBackground = "rgba(30, 30, 30, 1)", //Custom = #2d2d38 , original = #27272f
+            DrawerText = "rgba(255,255,255, 0.50)",
+            DrawerIcon = "rgba(255,255,255, 0.50)",
+            AppbarBackground = "#27272f",
+            AppbarText = "rgba(255,255,255, 0.70)",
+            TextPrimary = "rgba(255,255,255, 0.70)",
+            TextSecondary = "rgba(255,255,255, 0.50)",
+            ActionDefault = "#adadb1",
+            ActionDisabled = "rgba(255,255,255, 0.26)",
+            ActionDisabledBackground = "rgba(255,255,255, 0.12)",
+            Dark = "#c1c1c1",
+            Tertiary = "#7283d3",
+            Primary = "#54a0ff",
+            Secondary = "#594ae2ff"
+        }
+    };
+}

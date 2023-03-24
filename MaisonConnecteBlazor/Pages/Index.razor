@@ -1,0 +1,12 @@
+﻿@page "/"
+
+<MudContainer MaxWidth="MaxWidth.Large" >
+    <div style="width: 100%; text-align: center; margin-top: 25px;">
+        @if(string.IsNullOrEmpty(Image64))
+        {
+            <MudImage Src="images/black-square.jpg" Class="rounded-lg" Width="640" Height="480" ObjectFit="ObjectFit.Fill" />
+        } else {
+            <img src=@Image64 width="640" height="480" alt="Feedback video" />
+        }
+    </div>
+</MudContainer>
