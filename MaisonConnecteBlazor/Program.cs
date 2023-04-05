@@ -6,7 +6,10 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor().AddHubOptions(options =>
+{
+    options.MaximumReceiveMessageSize = null;
+});
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
