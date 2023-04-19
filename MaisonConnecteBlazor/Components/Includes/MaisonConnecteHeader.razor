@@ -1,0 +1,136 @@
+﻿@using MaisonConnecteBlazor.Components.Base;
+@inherits MaisonConnecteBase
+
+<header>
+    <div id="headerPersona">
+        <a id="headerTitle" href="/"><MudText Typo="Typo.body1">Maison Connectée</MudText></a>
+    </div>
+    <nav>
+        <div id="headerLinksContainer" class="desktopHeader">
+            @if (ActivePage.Count > 0)
+            {
+                <a class="headerLink" href="/"><div class="headerLinkContainer @(ActivePage[HeaderLinks.HOME] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Accueil</div></div></a>
+                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(ActivePage[HeaderLinks.VIDEOS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Vidéos</div></div></a>
+                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(ActivePage[HeaderLinks.STATS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Statistiques</div></div></a>
+            }
+        </div>
+
+        <div id="headerRightContainer" class="mobileHeader">
+            <a class="headerLink" href="javascript:;" role="button" @onclick="ToggleDrawer" style="width: 140px !important;">
+                <div class="headerLinkContainer">
+                    <MudIcon Icon="@Icons.Material.Filled.Dehaze"></MudIcon>
+                </div>
+            </a>
+        </div>
+
+        <MudDrawer @bind-Open="@DrawerOpened" Anchor="Anchor.Top" Elevation="1" Variant="DrawerVariant.Temporary">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6" style="color: #eeeeee;">Maison Connectée</MudText>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <a class="headerLink" href="/"><div class="headerLinkContainer @(ActivePage[HeaderLinks.HOME] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Accueil</div></div></a>
+                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(ActivePage[HeaderLinks.VIDEOS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Vidéos</div></div></a>
+                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(ActivePage[HeaderLinks.STATS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Statistiques</div></div></a>
+            </MudNavMenu>
+        </MudDrawer>
+    </nav>
+</header>
+
+<style>
+    @@media only screen and (max-width: 1080px) {
+        .desktopHeader {
+            display: none !important;
+        }
+    }
+
+    @@media only screen and (min-width: 1080px) {
+        .mobileHeader {
+            display: none !important;
+        }
+    }
+
+    header {
+        display: flex;
+        background-color: rgb(35, 35, 35);
+    }
+
+    header > nav {
+        display: flex;
+        width: 100%;
+    }
+
+    #headerPersona {
+        display: flex;
+    }
+
+    #headerTitle {
+        display: block;
+        margin: auto 0;
+        margin-left: 25px;
+        width: 200px;
+        text-decoration: none;
+        color: #eeeeee;
+    }
+
+    #headerLinksContainer {
+        display: flex;
+        margin-left: 25px;
+    }
+
+    .headerLink {
+        color: white;
+        text-decoration: none;
+    }
+
+    .headerLink:hover {
+        color: white;
+    }
+
+    .headerLinkContainer {
+        height: 75px;
+        width: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 3px solid rgb(35, 35, 35);
+        transition: 0.3s;
+    }
+
+    .headerLinkContainer:hover {
+        background-color: rgb(45, 45, 45);
+        border-bottom: 3px solid rgba(200, 200, 200, 200);
+    }
+
+    .headerLinkCurrent {
+        background-color: rgb(50, 50, 50) !important;
+        border-bottom: 3px solid rgb(61, 115, 255) !important;
+    }
+
+    .headerLinkText {
+        margin: 0 auto;
+    }
+
+    #headerRightContainer {
+        display: flex;
+        text-align: right;
+        margin-left: auto;
+    }
+
+    #userDropDown {
+        margin-right: 15px;
+    }
+
+    #userDropDownButton {
+        width: 160px;
+        border: none !important;
+    }
+
+    #userDropDownText {
+        margin: 0;
+    }
+
+    .mud-list {
+        border: 1px solid rgb(50, 50, 50);
+        border-radius: 3px;
+    }
+</style>

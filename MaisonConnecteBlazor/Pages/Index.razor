@@ -1,12 +1,20 @@
-﻿@page "/"
+﻿@using MaisonConnecteBlazor.Components.Base;
+@using MaisonConnecteBlazor.Components.Includes;
+@inherits MaisonConnecteBase;
 
-<MudContainer MaxWidth="MaxWidth.Large" >
-    <div style="width: 100%; text-align: center; margin-top: 25px;">
+@page "/"
+
+<MaisonConnecteHeader></MaisonConnecteHeader>
+
+<MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 25px;">
+    <img src="@Image64" style="max-width: 100%; height: auto;" />
+    @*<div style="width: 100%; text-align: center; margin-top: 25px;">
         @if(string.IsNullOrEmpty(Image64))
         {
-            <MudImage Src="images/black-square.jpg" Class="rounded-lg" Width="640" Height="480" ObjectFit="ObjectFit.Fill" />
+            <img src="@Image64" style="max-width: 100%; height: auto;" />
+            //<MudImage Src="images/black-square.jpg" Class="rounded-lg" Width="1280" Height="720" ObjectFit="ObjectFit.Fill" />
         } else {
-            <img src=@Image64 width="640" height="480" alt="Feedback video" />
+            <img src=@Image64 width="1280" height="720" alt="Feedback video" />
         }
-    </div>
+    </div>*@
 </MudContainer>

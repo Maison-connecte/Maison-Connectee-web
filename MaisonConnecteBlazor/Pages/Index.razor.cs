@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using MaisonConnecteBlazor.Components.Base;
 
 namespace MaisonConnecteBlazor.Pages
 {
-    public partial class Index : ComponentBase
+    public partial class Index : MaisonConnecteBase, IDisposable
     {
-        private SimpleTcpClient socketClient = new SimpleTcpClient();
+        private Socket clientSocket;
         public string Image64 { get; set; } = string.Empty;
 
         protected override Task OnInitializedAsync()
@@ -22,10 +23,12 @@ namespace MaisonConnecteBlazor.Pages
 
         public Task SetupSocketConnection()
         {
+            Dispose();
+
             int port = 8010;
             string serverIpAddress = "10.10.211.27"; // Replace with your server's IP address
 
-            Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIpAddress), port);
 
             try
@@ -39,25 +42,23 @@ namespace MaisonConnecteBlazor.Pages
 
                 while ((bytesReceived = clientSocket.Receive(buffer)) > 0)
                 {
-                    string test2 = Convert.ToBase64String(buffer, 0, bytesReceived);
-                    string test = Encoding.ASCII.GetString(buffer, 0, bytesReceived);
-                    Image64 = string.Concat("data:image/jpeg;base64,", test);
-                    Debug.WriteLine(test.Length / 1024);
-                    if(!File.Exists("image8.txt"))
-                    {
-                        File.WriteAllText("image8.txt", test);
-                        //UpdateImage();
-                    }
+                    Image64 = string.Concat("data:image/jpeg;base64,", Encoding.ASCII.GetString(buffer, 0, bytesReceived)).Replace("---END_OF_FRAME---", "");
                     UpdateImage();
                 }
+                buffer = null;
             }
             catch (SocketException ex)
             {
                 Debug.WriteLine($"Socket exception: {ex.Message}");
             }
+            catch(ObjectDisposedException ex)
+            {
+                Debug.WriteLine("Socket killed");
+            }
+            catch(NullReferenceException ex) { }
             finally
             {
-                clientSocket.Close();
+                Dispose();
                 Debug.WriteLine("Connection closed.");
             }
 
@@ -76,15 +77,24 @@ namespace MaisonConnecteBlazor.Pages
 
             return Task.CompletedTask;
         }
-
-        private void RequestImage()
-        {
-            socketClient.WriteLine("Need_Image_PLS");
-        }
           
         public async void UpdateImage()
         {
             await InvokeAsync(StateHasChanged);
+        }
+
+        public void Dispose()
+        {
+            if (clientSocket != null)
+            {
+                clientSocket.Close();
+                clientSocket.Dispose();
+                clientSocket = null;
+
+                GC.Collect();
+            }
+
+            Debug.WriteLine("Disposed of socket");
         }
     }
 }
