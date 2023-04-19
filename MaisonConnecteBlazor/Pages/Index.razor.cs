@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.VisualStudio.Threading;
-using SimpleTCP;
+﻿using Microsoft.VisualStudio.Threading;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net;
