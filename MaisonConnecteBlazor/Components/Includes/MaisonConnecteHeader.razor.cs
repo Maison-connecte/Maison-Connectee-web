@@ -8,12 +8,14 @@ namespace MaisonConnecteBlazor.Components.Includes
         HOME,
         VIDEOS,
         STATS,
+        MANAGE,
     }
 
     public partial class MaisonConnecteHeader : MaisonConnecteBase
     {
         public const string VideosIdentifier = "videos";
         public const string StatsIdentifier = "stats";
+        public const string ManageIdentifier = "manage";
 
         public Dictionary<HeaderLinks, bool> ActivePage { get; set; } = new Dictionary<HeaderLinks, bool>();
         public bool DrawerOpened { get; set; } = false;
@@ -66,6 +68,9 @@ namespace MaisonConnecteBlazor.Components.Includes
                         break;
                     case StatsIdentifier:
                         ActivePage[HeaderLinks.STATS] = true;
+                        break;
+                    case ManageIdentifier:
+                        ActivePage[HeaderLinks.MANAGE] = true;
                         break;
                     default:
                         break;

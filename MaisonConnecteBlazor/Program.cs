@@ -1,4 +1,5 @@
 using BlazorSpinner;
+using MaisonConnecteBlazor.Configuration;
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -31,5 +32,7 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+ConfigManager.Initialize();
 
 app.Run();
