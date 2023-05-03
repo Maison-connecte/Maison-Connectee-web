@@ -1,8 +1,30 @@
 ﻿@using MaisonConnecteBlazor.Components.Base;
 @using MaisonConnecteBlazor.Components.Includes;
+@using MaisonConnecteBlazor.Components.Misc;
+@using MaisonConnecteBlazor.Database.Models;
 
 @inherits MaisonConnecteBase
 
 @page "/videos"
 
 <MaisonConnecteHeader></MaisonConnecteHeader>
+
+<MaisonConnecteTitle>Gallerie vidéo</MaisonConnecteTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 15px;">
+    <MudGrid>
+        @foreach(Enregistrement enregistrement in videos) {
+            <MudItem xs="4">
+                <MudPaper Class="align-center justify-center mud-width-full">
+                    <div>
+                        <MudImage Src="images/black-square.jpg" Height="200" ObjectFit="ObjectFit.Cover" style="width: 100%;"></MudImage>
+                    </div>
+
+                    <div style="width: 100%; padding: 10px; text-align: right;">
+                        <MudText Typo="Typo.body1">@enregistrement.Date.ToString()</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
