@@ -20,7 +20,7 @@ namespace MaisonConnecteBlazor.Pages
             return base.OnInitializedAsync();
         }
 
-        public Task SetupSocketConnection()
+        public async Task SetupSocketConnection()
         {
             Dispose();
 
@@ -32,11 +32,11 @@ namespace MaisonConnecteBlazor.Pages
 
             try
             {
-                clientSocket.Connect(serverEndPoint);
+                await clientSocket.ConnectAsync(serverEndPoint);
                 Debug.WriteLine("Connected to the server.");
 
                 // Receive data from the server
-                byte[] buffer = new byte[100000000]; // Buffer size can be adjusted as needed
+                byte[]? buffer = new byte[100000000]; // Buffer size can be adjusted as needed
                 int bytesReceived;
 
                 while ((bytesReceived = clientSocket.Receive(buffer)) > 0)
@@ -60,21 +60,6 @@ namespace MaisonConnecteBlazor.Pages
                 Dispose();
                 Debug.WriteLine("Connection closed.");
             }
-
-            //socketClient.Connect("localhost", 8010);
-            //socketClient.StringEncoder = System.Text.Encoding.ASCII;
-            //RequestImage();
-            //socketClient.DataReceived += (sender, msg) =>
-            //{
-            //    //Debug.WriteLine(msg.MessageString);
-            //    Debug.WriteLine(msg.MessageString);
-            //    Image64 = "data:image/jpg; base64, " + msg.MessageString.Substring(0, msg.MessageString.Length - 1);
-            //    UpdateImage();
-            //};
-
-
-
-            return Task.CompletedTask;
         }
           
         public async void UpdateImage()

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MaisonConnecteBlazor.Database.Models;
+﻿namespace MaisonConnecteBlazor.Database.Models;
 
 public partial class Enregistrement
 {

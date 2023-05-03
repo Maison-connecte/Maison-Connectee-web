@@ -13,15 +13,15 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 15px;">
     <MudGrid>
-        @foreach(Enregistrement enregistrement in videos) {
+        @foreach(EnregistrementPreview enregistrement in videos) {
             <MudItem xs="4">
                 <MudPaper Class="align-center justify-center mud-width-full">
                     <div>
-                        <MudImage Src="images/black-square.jpg" Height="200" ObjectFit="ObjectFit.Cover" style="width: 100%;"></MudImage>
+                        <img src="@($"data:image/jpeg;base64,{Convert.ToBase64String(enregistrement.Thumbnail!)}")" height="200" style="width: 100%; object-fit: cover;" />
                     </div>
 
                     <div style="width: 100%; padding: 10px; text-align: right;">
-                        <MudText Typo="Typo.body1">@enregistrement.Date.ToString()</MudText>
+                        <MudText Typo="Typo.body1">@enregistrement.Temps.ToString()</MudText>
                     </div>
                 </MudPaper>
             </MudItem>

@@ -1,19 +1,37 @@
 ﻿using MaisonConnecteBlazor.Components.Base;
+using MaisonConnecteBlazor.Database;
 using MaisonConnecteBlazor.Database.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace MaisonConnecteBlazor.Pages
 {
+    public class EnregistrementPreview
+    {
+        public byte[]? Thumbnail;
+        public DateTime Temps;
+    }
     public partial class Videos : MaisonConnecteBase
     {
-        List<Enregistrement> videos = new List<Enregistrement>();
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
+        List<EnregistrementPreview> videos = new List<EnregistrementPreview>();
 
-            for(int i = 0; i < 10; i++)
+        protected override async Task OnInitializedAsync()
+        {
+            await GetVideos();
+            await base.OnInitializedAsync();
+        }
+
+        private async Task GetVideos()
+        {
+            DBConnect context = new DBConnect();
+
+            videos = await context.db.Enregistrements.Select(enregistrement => new EnregistrementPreview()
             {
-                videos.Add(new Enregistrement() { Date = DateTime.Now});
-            }
+                Thumbnail = enregistrement.Thumbnail,
+                Temps = enregistrement.Date,
+            }).ToListAsync();
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 }
