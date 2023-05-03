@@ -31,7 +31,8 @@ public partial class MaisonConnecteContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Date)
-                .HasColumnType("date")
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
                 .HasColumnName("date");
             entity.Property(e => e.FluxVideo).HasColumnName("flux_video");
             entity.Property(e => e.Thumbnail).HasColumnName("thumbnail");

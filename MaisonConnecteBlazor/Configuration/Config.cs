@@ -6,5 +6,7 @@
         public string User = string.Empty;
         public string Password = string.Empty;
         public string Database = string.Empty;
+        public string VideoFeedIP = "";
+        public int VideoFeedPort = 0;
     }
 }

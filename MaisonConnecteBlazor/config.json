@@ -2,5 +2,7 @@
   "Server": "localhost",
   "User": "thugapy",
   "Password": "testpw",
-  "Database": "maison_connecte2"
+  "Database": "maison_connecte2",
+  "VideoFeedIP": "10.10.211.27",
+  "VideoFeedPort": 8010
 }

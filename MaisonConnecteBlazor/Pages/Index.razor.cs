@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using MaisonConnecteBlazor.Components.Base;
+using MaisonConnecteBlazor.Configuration;
 
 namespace MaisonConnecteBlazor.Pages
 {
@@ -23,8 +24,8 @@ namespace MaisonConnecteBlazor.Pages
         {
             Dispose();
 
-            int port = 8010;
-            string serverIpAddress = "10.10.211.27"; // Replace with your server's IP address
+            string serverIpAddress = ConfigManager.CurrentConfig.VideoFeedIP;
+            int port = ConfigManager.CurrentConfig.VideoFeedPort;
 
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIpAddress), port);

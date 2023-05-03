@@ -11,5 +11,5 @@ public partial class Enregistrement
 
     public byte[] Thumbnail { get; set; } = null!;
 
-    public DateTime? Date { get; set; }
+    public DateTime Date { get; set; }
 }
