@@ -72,6 +72,9 @@ csharp_style_prefer_top_level_statements = true:silent
 csharp_prefer_static_local_function = true:suggestion
 csharp_space_around_binary_operators = before_and_after
 
+# VSTHRD100: Avoid async void methods
+dotnet_diagnostic.VSTHRD100.severity = none
+
 [*.vb]
 #### Styles de nommage ####
 

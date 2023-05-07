@@ -1,0 +1,19 @@
+﻿@using MaisonConnecteBlazor.Components.Base;
+@using MaisonConnecteBlazor.Components.Includes;
+@using MaisonConnecteBlazor.Components.Misc;
+@using MaisonConnecteBlazor.Database.Models;
+
+@inherits MaisonConnecteBase
+
+@page "/videos/{ID:int}"
+
+<MaisonConnecteHeader></MaisonConnecteHeader>
+
+<MaisonConnecteTitle>Lecture de vidéo</MaisonConnecteTitle>
+<MudContainer MaxWidth="MaxWidth.Small" style="text-align: center;">
+    <MudButton Color="Color.Info" Variant="Variant.Outlined" style="width: 200px;" OnClick="GoBack">Retour</MudButton>
+</MudContainer>
+
+<MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 25px; text-align: center;">
+    <video id="videoPlayback" controls></video>
+</MudContainer>

@@ -10,11 +10,9 @@
 <MaisonConnecteTitle>Flux vidéo</MaisonConnecteTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" style="display: flex;">
-    <img src="@Image64" style="max-width: 100%; height: auto;" />
     <div style="width: 100%; text-align: center;">
         @if(string.IsNullOrEmpty(Image64))
         {
-            @*<img src="@Image64" style="max-width: 100%; height: auto;" />*@
             <MudImage Src="images/black-square.jpg" Class="rounded-lg" Width="1280" Height="720" ObjectFit="ObjectFit.Fill" />
         } else {
             <img src=@Image64 width="1280" height="720" alt="Feedback video" />

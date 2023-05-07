@@ -1,5 +1,8 @@
 ﻿namespace MaisonConnecteBlazor.Configuration
 {
+    /// <summary>
+    /// Classe représentant une configuration
+    /// </summary>
     public class Config
     {
         public string Server = string.Empty;

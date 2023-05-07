@@ -9,7 +9,7 @@
 
 <MaisonConnecteHeader></MaisonConnecteHeader>
 
-<MaisonConnecteTitle>Gallerie vidéo</MaisonConnecteTitle>
+<MaisonConnecteTitle>Galerie vidéo</MaisonConnecteTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 15px;">
     <MudGrid>
@@ -17,7 +17,7 @@
             <MudItem xs="4">
                 <MudPaper Class="align-center justify-center mud-width-full">
                     <div>
-                        <img src="@($"data:image/jpeg;base64,{Convert.ToBase64String(enregistrement.Thumbnail!)}")" height="200" style="width: 100%; object-fit: cover;" />
+                        <a href="@("videos/" + enregistrement.ID)"><img src="@($"data:image/jpeg;base64,{Convert.ToBase64String(enregistrement.Thumbnail!)}")" height="200" style="width: 100%; object-fit: cover;" /></a>
                     </div>
 
                     <div style="width: 100%; padding: 10px; text-align: right;">

@@ -8,13 +8,21 @@ using MaisonConnecteBlazor.Configuration;
 
 namespace MaisonConnecteBlazor.Pages
 {
+    /// <summary>
+    /// Classe gérant l'index de la page, la page avec le flux vidéo en direct de la caméra
+    /// </summary>
     public partial class Index : MaisonConnecteBase, IDisposable
     {
-        private Socket clientSocket;
+        // Initialisation des variables
+        private Socket? clientSocket;
         public string Image64 { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Méthode appelé au moment de l'initialisation de la page
+        /// </summary>
         protected override Task OnInitializedAsync()
         {
+            // Connexion au socket
             Task.Run(SetupSocketConnection).Forget();
 
             return base.OnInitializedAsync();
@@ -22,8 +30,10 @@ namespace MaisonConnecteBlazor.Pages
 
         public async Task SetupSocketConnection()
         {
+            // On valide que le socket n'existe pas
             Dispose();
 
+            // On crée la connexion au socket
             string serverIpAddress = ConfigManager.CurrentConfig.VideoFeedIP;
             int port = ConfigManager.CurrentConfig.VideoFeedPort;
 
@@ -32,11 +42,10 @@ namespace MaisonConnecteBlazor.Pages
 
             try
             {
+                // On se connecte au socket et on reçoit des données indéfiniement
                 await clientSocket.ConnectAsync(serverEndPoint);
-                Debug.WriteLine("Connected to the server.");
 
-                // Receive data from the server
-                byte[]? buffer = new byte[100000000]; // Buffer size can be adjusted as needed
+                byte[]? buffer = new byte[100000000];
                 int bytesReceived;
 
                 while ((bytesReceived = clientSocket.Receive(buffer)) > 0)
@@ -46,27 +55,33 @@ namespace MaisonConnecteBlazor.Pages
                 }
                 buffer = null;
             }
-            catch (SocketException ex)
+            catch (SocketException ex) // On attrape les erreurs
             {
-                Debug.WriteLine($"Socket exception: {ex.Message}");
+                Debug.WriteLine("Socket exception:" + ex.Message);
             }
-            catch(ObjectDisposedException ex)
+            catch(ObjectDisposedException)
             {
                 Debug.WriteLine("Socket killed");
             }
-            catch(NullReferenceException ex) { }
+            catch(NullReferenceException) { }
             finally
             {
+                // Lorsque c'est fini, on dispose du socket
                 Dispose();
-                Debug.WriteLine("Connection closed.");
             }
         }
           
+        /// <summary>
+        /// Méthode qui sert à mettre l'image à jour dans le navigateur
+        /// </summary>
         public async void UpdateImage()
         {
             await InvokeAsync(StateHasChanged);
         }
 
+        /// <summary>
+        /// Méthode qui sert à tuer le socket
+        /// </summary>
         public void Dispose()
         {
             if (clientSocket != null)
@@ -77,8 +92,6 @@ namespace MaisonConnecteBlazor.Pages
 
                 GC.Collect();
             }
-
-            Debug.WriteLine("Disposed of socket");
         }
     }
 }

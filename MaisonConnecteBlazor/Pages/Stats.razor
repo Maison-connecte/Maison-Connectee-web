@@ -10,43 +10,42 @@
 
 <MaisonConnecteTitle>Statistiques</MaisonConnecteTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large" style="margin-top: 50px !important;">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" style="margin-top: 50px !important; text-align: center;">
     <MudPaper>
         <MudGrid Spacing="8" Justify="Justify.Center">
             <MudItem>
-                <MudSelect T="string" Variant="Variant.Filled" Label="Évenement">
-                  <MudSelectItem Value="@("Test")"></MudSelectItem>
+                <MudSelect T="string" Variant="Variant.Filled" Label="Évenement" @bind-Value="Event" AnchorOrigin="Origin.BottomCenter">
+                    @foreach(KeyValuePair<string, string> maisonEvent in EventMap)
+                    {
+                        <MudSelectItem Value="@maisonEvent.Key">@maisonEvent.Value</MudSelectItem>
+                    }
                 </MudSelect>
             </MudItem>
             <MudItem>
-                <MudDatePicker Label="Date de début"></MudDatePicker>
+                <MudDatePicker Label="Date de début" @bind-Date="StartDate"></MudDatePicker>
             </MudItem>
             <MudItem>
-                <MudDatePicker Label="Date de fin"></MudDatePicker>
+                <MudDatePicker Label="Date de fin" @bind-Date="EndDate"></MudDatePicker>
             </MudItem>
+            <MudItem>
+                <MudSelect T="string" Variant="Variant.Filled" Label="Unité de temps" @bind-Value="GraphTime" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (KeyValuePair<string, string> temps in TimeMap)
+                    {
+                        <MudSelectItem Value="@temps.Key">@temps.Value</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+
             <MudItem style="display: flex;">
-                <MudButtonGroup Color="Color.Info" Variant="Variant.Outlined" style="margin: auto 0;">
-                    <MudButton>Semaine</MudButton>
-                    <MudButton>Mois</MudButton>
-                    <MudButton>Année</MudButton>
-                </MudButtonGroup>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info" @onclick="UpdateGraph">Mettre à jour</MudButton>
             </MudItem>
         </MudGrid>
     </MudPaper>
 
     <div style="margin-top: 60px;">
-        <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+        @if (ChartData.Count > 0)
+        {
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@ChartData" XAxisLabels="@GraphXAxis" Width="100%" Height="500px"></MudChart>
+        }
     </div>
 </MudContainer>
-
-@code {
-    private int Index = -1;
-
-    public List<ChartSeries> Series = new List<ChartSeries>()
-    {
-    new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
-    new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
-    new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
-    };
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
-}

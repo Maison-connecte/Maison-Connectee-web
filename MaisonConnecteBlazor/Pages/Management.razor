@@ -12,16 +12,15 @@
 
 <MudContainer MaxWidth="MaxWidth.Large">
     <div style="display: flex; justify-content: center;">
-        <MudColorPicker ColorPickerMode="ColorPickerMode.RGB" PickerVariant="PickerVariant.Static" />
+        <MudColorPicker ColorPickerMode="ColorPickerMode.RGB" PickerVariant="PickerVariant.Static" Rounded="true" @bind-Value="Color" />
 
         <div style="margin-left: 30px; width: 350px;">
             <MudPaper Height="400px" Class="px-4 pt-2 pb-4" Style="display: flex; flex-direction: column;">
                 <MudText Typo="Typo.h6" style="margin-top: 5px;">Options</MudText>
-                <MudSwitch Label="LED allumé" Checked="true" Color="Color.Info"></MudSwitch>
-                <MudSlider @bind-Value="Intensite" Min="0" Max="100" Color="Color.Info">Intensité: @Intensite.ToString()</MudSlider>
+                <MudSwitch @bind-Checked="LEDAllume" Label="LED allumé" Color="MudBlazor.Color.Info"></MudSwitch>
 
                 <div style="width: 100%; height: 40px; margin-top: auto; display: flex; justify-content: center;">
-                    <MudButton Variant="Variant.Outlined" Color="Color.Info" style="width: 100%;">Envoyer</MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="MudBlazor.Color.Info" style="width: 100%;" @onclick="SendMQTTData">Envoyer</MudButton>
                 </div>
             </MudPaper>
         </div>

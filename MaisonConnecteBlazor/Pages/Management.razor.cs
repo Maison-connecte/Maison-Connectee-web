@@ -1,10 +1,63 @@
 ﻿using MaisonConnecteBlazor.Components.Base;
+using MQTTnet;
+using MQTTnet.Client;
+using MudBlazor.Utilities;
 
 namespace MaisonConnecteBlazor.Pages
 {
+    /// <summary>
+    /// Classe gérant la page de gestion du matériel
+    /// </summary>
     public partial class Management : MaisonConnecteBase
     {
-        public double Intensite { get; set; } = 100;
-        public Management() { }
+        // Information de connexion et des topics MQTT
+        public const string Server = "test.mosquitto.org";
+        public const int ServerPort = 1883;
+        public const string ColorTopic = "colordylan";
+        public const string LEDEnabledTopic = "enabled";
+
+        // Initialiser des variables
+        public bool LEDAllume { get; set; } = true;
+        public MudColor Color { get; set; } = "#FF0000FF";
+
+        /// <summary>
+        /// Méthode envoyant les données de la page à MQTT
+        /// </summary>
+        public async Task SendMQTTData()
+        {
+            // Formattage de l'information à envoyer
+            int Intensite = (Color.A / 255) * 100;
+            string ColorData = string.Join("/", new List<string>() { Color.R.ToString(), Color.G.ToString(), Color.A.ToString(), Intensite.ToString()});
+
+            // Création de la connexion avec le serveur
+            MqttClientOptionsBuilder builder = new MqttClientOptionsBuilder();
+            builder.WithClientId(Guid.NewGuid().ToString());
+            builder.WithTcpServer(Server, ServerPort);
+
+            // Création du client MQTT
+            MqttFactory factory = new MqttFactory();
+            IMqttClient client = factory.CreateMqttClient();
+
+            // Connexion au serveur
+            await client.ConnectAsync(builder.Build());
+
+            // Création du message pour la couleur
+            MqttApplicationMessageBuilder ColorBuilder = new MqttApplicationMessageBuilder();
+            ColorBuilder.WithTopic(ColorTopic);
+            ColorBuilder.WithPayload(ColorData);
+
+            // Création du message pour activer/désactiver la LED
+            MqttApplicationMessageBuilder EnabledBuilder = new MqttApplicationMessageBuilder();
+            EnabledBuilder.WithTopic(LEDEnabledTopic);
+            EnabledBuilder.WithPayload(LEDAllume ? "1" : "0");
+
+            // Envoie des messages
+            await client.PublishAsync(ColorBuilder.Build());
+            await client.PublishAsync(EnabledBuilder.Build());
+
+            // Déconnexion du client et montrer un message à l'utilisateur
+            await client.DisconnectAsync();
+            Snackbar.Add("Les informations ont bien été envoyés par MQTT!", MudBlazor.Severity.Success);
+        }
     }
 }

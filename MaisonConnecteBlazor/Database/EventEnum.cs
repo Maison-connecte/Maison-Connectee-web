@@ -2,6 +2,9 @@
 
 namespace MaisonConnecteBlazor.Database
 {
+    /// <summary>
+    /// Classe héritant de StringEnum pour les évenements de statistiques
+    /// </summary>
     public class EventEnum : StringEnum
     {
         public const string LightOn = "light_on";

@@ -1,54 +1,17 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-
-namespace MaisonConnecteBlazor.Extensions
+﻿namespace MaisonConnecteBlazor.Extensions
 {
+    /// <summary>
+    /// Classe servant à faire des extensions pour les chaines de caractères
+    /// </summary>
     public static class StringExtensions
     {
-        public static string Base64Encode(this string str)
-        {
-            byte[] textByte = Encoding.UTF8.GetBytes(str);
-            return Convert.ToBase64String(textByte);
-        }
-
-        public static string Base64Decode(this string str)
-        {
-            byte[] textByte = Convert.FromBase64String(str);
-            return Encoding.UTF8.GetString(textByte);
-        }
-
-        public static string ToSha1(this string str)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-            SHA1 crypto = SHA1.Create();
-            byte[] encodedBytes = crypto.ComputeHash(bytes);
-
-            StringBuilder hashBuilder = new StringBuilder();
-
-            foreach (byte b in encodedBytes)
-            {
-                hashBuilder.Append(b.ToString("x2"));
-            }
-
-            return hashBuilder.ToString();
-        }
-
-        public static string ToSha256(this string str)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(str);
-            SHA256 crypto = SHA256.Create();
-            byte[] encodedBytes = crypto.ComputeHash(bytes);
-
-            StringBuilder hashBuilder = new StringBuilder();
-
-            foreach (byte b in encodedBytes)
-            {
-                hashBuilder.Append(b.ToString("x2"));
-            }
-
-            return hashBuilder.ToString();
-        }
-
+        /// <summary>
+        /// Fonction qui sert à trouver la xième occurence d'un caractère dans une chaine
+        /// </summary>
+        /// <param name="str">string, La string à executer cette fonction dessus</param>
+        /// <param name="character">char, Le caractère à trouver</param>
+        /// <param name="occurence">int, Le numéro de l'occurence</param>
+        /// <returns>int, L'index du caractère</returns>
         public static int IndexOfNth(this string str, char character, int occurence)
         {
             int occurenceCount = 0;
@@ -68,6 +31,13 @@ namespace MaisonConnecteBlazor.Extensions
             return -1;
         }
 
+        /// <summary>
+        /// Fonction qui sert à trouver la xième occurence d'un caractère dans une chaine
+        /// </summary>
+        /// <param name="str">string, La string à executer cette fonction dessus</param>
+        /// <param name="character">string, Le caractère à trouver sous forme de chaine</param>
+        /// <param name="occurence">int, Le numéro de l'occurence</param>
+        /// <returns>int, L'index du caractère</returns>
         public static int IndexOfNth(this string str, string character, int occurence)
         {
             return str.IndexOfNth(character[0], occurence);

@@ -3,6 +3,9 @@ using MaisonConnecteBlazor.Extensions;
 
 namespace MaisonConnecteBlazor.Components.Includes
 {
+    /// <summary>
+    /// Enum pour toutes les pages disponibles
+    /// </summary>
     public enum HeaderLinks
     {
         HOME,
@@ -11,12 +14,17 @@ namespace MaisonConnecteBlazor.Components.Includes
         MANAGE,
     }
 
+    /// <summary>
+    /// Classe gérant le header des pages
+    /// </summary>
     public partial class MaisonConnecteHeader : MaisonConnecteBase
     {
+        // Identifiant pour chaque page
         public const string VideosIdentifier = "videos";
         public const string StatsIdentifier = "stats";
         public const string ManageIdentifier = "manage";
 
+        // Initialisation des variables
         public Dictionary<HeaderLinks, bool> ActivePage { get; set; } = new Dictionary<HeaderLinks, bool>();
         public bool DrawerOpened { get; set; } = false;
 
@@ -27,8 +35,12 @@ namespace MaisonConnecteBlazor.Components.Includes
             base.OnParametersSet();
         }
 
+        /// <summary>
+        /// Méthode qui sert a valider la page où l'utilisateur se trouve présentement
+        /// </summary>
         private void CheckActivePage()
         {
+            // Initialisation de la page active
             ActivePage = new Dictionary<HeaderLinks, bool>();
 
             foreach (HeaderLinks header in Enum.GetValues(typeof(HeaderLinks)))
@@ -36,6 +48,7 @@ namespace MaisonConnecteBlazor.Components.Includes
                 ActivePage[header] = false;
             }
 
+            // Manipulation de strings pour trouver la page que l'utilisateur se trouve présentement
             string url = NavigationManager.Uri.Replace("www", "").Replace("http://", "").Replace("https://", "");
             int indexOfSlash = url.IndexOf("/");
 
@@ -80,6 +93,9 @@ namespace MaisonConnecteBlazor.Components.Includes
             StateHasChanged();
         }
 
+        /// <summary>
+        /// Méthode qui ouvre/ferme le "drawer" utilisable sur mobile
+        /// </summary>
         private void ToggleDrawer()
         {
             DrawerOpened = !DrawerOpened;

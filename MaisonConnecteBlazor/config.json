@@ -1,7 +1,7 @@
 {
-  "Server": "localhost",
+  "Server": "ThuGapySV",
   "User": "thugapy",
-  "Password": "testpw",
+  "Password": "thug2727",
   "Database": "maison_connecte3",
   "VideoFeedIP": "10.10.211.27",
   "VideoFeedPort": 8010
