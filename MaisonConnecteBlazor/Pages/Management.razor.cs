@@ -26,8 +26,11 @@ namespace MaisonConnecteBlazor.Pages
         public async Task SendMQTTData()
         {
             // Formattage de l'information à envoyer
-            int Intensite = (Color.A / 255) * 100;
-            string ColorData = string.Join("/", new List<string>() { Color.R.ToString(), Color.G.ToString(), Color.A.ToString(), Intensite.ToString()});
+            float Intensite = (Color.A / 255f);
+            int R = LEDAllume ? (int)(Color.R * Intensite) : 0;
+            int G = LEDAllume ? (int)(Color.G * Intensite) : 0;
+            int B = LEDAllume ? (int)(Color.B * Intensite) : 0;
+            string ColorData = string.Join("/", new List<string>() { R.ToString(), G.ToString(), B.ToString(), LEDAllume ? "1" : "0"});
 
             // Création de la connexion avec le serveur
             MqttClientOptionsBuilder builder = new MqttClientOptionsBuilder();
