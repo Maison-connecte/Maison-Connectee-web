@@ -9,10 +9,10 @@ namespace MaisonConnecteBlazor.Database
     public class MSSQLConnection
     {
         // Variable de connexion
-        private string Server;
-        private string User;
-        private string Password;
-        private string Database;
+        private string Serveur;
+        private string Utilisateur;
+        private string MotDePasse;
+        private string BD;
 
         /// <summary>
         /// Constructeur, initialise les données membres de l'objet
@@ -23,10 +23,10 @@ namespace MaisonConnecteBlazor.Database
         /// <param name="_database">string, La base de données à utiliser</param>
         public MSSQLConnection(string _server, string _user, string _password, string _database)
         {
-            Server = _server;
-            User = _user;
-            Password = _password;
-            Database = _database;
+            Serveur = _server;
+            Utilisateur = _user;
+            MotDePasse = _password;
+            BD = _database;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace MaisonConnecteBlazor.Database
         /// <returns>string, La connexion string</returns>
         public override string ToString()
         {
-            return "Server=" + Server + ";User ID=" + User + ";Password=" + Password + ";Database=" + Database + ";Trusted_Connection=False;Encrypt=False";
+            return "Server=" + Serveur + ";User ID=" + Utilisateur + ";Password=" + MotDePasse + ";Database=" + BD + ";Trusted_Connection=False;Encrypt=False";
         }
     }
 }

@@ -9,19 +9,19 @@ namespace MaisonConnecteBlazor.Pages
     /// <summary>
     /// Classe stockant les informations des statistique par date
     /// </summary>
-    public class StatsWrapper
+    public class EmballageStatistiques
     {
         public DateTime Date { get; set; }
-        public int Count { get; set; }
+        public int Quantite { get; set; }
     }
 
     /// <summary>
     /// Classe stockant les informations des statistique par ID
     /// </summary>
-    public class IDStatsWrapper
+    public class EmballageStatistiquesID
     {
         public int ID { get; set; }
-        public int Count { get; set; }
+        public int Quantite { get; set; }
     }
 
     /// <summary>
@@ -34,16 +34,16 @@ namespace MaisonConnecteBlazor.Pages
         /// </summary>
         public static Dictionary<string, string> EventMap = new Dictionary<string, string>()
         {
-            { EventEnum.LightOn, "Lumière allumée" },
-            { EventEnum.LightOff, "Lumière fermée" },
-            { EventEnum.LEDColor, "Changement de la couleur de la LED" },
-            { EventEnum.DoorStatusChanged, "Changement du status de la porte" },
+            { EventEnum.LumiereAllume, "Lumière allumée" },
+            { EventEnum.LumiereFerme, "Lumière fermée" },
+            { EventEnum.CouleurLED, "Changement de la couleur de la LED" },
+            { EventEnum.StatusPorteChange, "Changement du status de la porte" },
         };
 
         /// <summary>
         /// Dictionaire contenant les unités de temps pour le tri
         /// </summary>
-        public static Dictionary<string, string> TimeMap = new Dictionary<string, string>()
+        public static Dictionary<string, string> CarteTemps = new Dictionary<string, string>()
         {
             { "day", "Trier par jour" },
             { "week", "Trier par semaine" },
@@ -53,7 +53,7 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Dictionaire contenant les noms des mois par rapport à leur index
         /// </summary>
-        public static Dictionary<int, string> MonthMap = new Dictionary<int, string>()
+        public static Dictionary<int, string> CarteMois = new Dictionary<int, string>()
         {
             { 1, "Jan." },
             { 2, "Fev." },
@@ -70,29 +70,29 @@ namespace MaisonConnecteBlazor.Pages
         };
 
         // Déclaration des variables
-        public string Event { get; set; } = string.Empty;
-        public DateTime? StartDate { get; set; } = DateTime.Now.AddDays(-1);
-        public DateTime? EndDate { get; set; } = DateTime.Now;
-        public string GraphTime { get; set; } = string.Empty;
-        public List<ChartSeries> ChartData { get; set; } = new List<ChartSeries>();
-        public string[] GraphXAxis { get; set; } = new string[1];
+        public string Evenement { get; set; } = string.Empty;
+        public DateTime? DateDebut { get; set; } = DateTime.Now.AddDays(-1);
+        public DateTime? DateFin { get; set; } = DateTime.Now;
+        public string TempsGraphique { get; set; } = string.Empty;
+        public List<ChartSeries> DonneesGraphique { get; set; } = new List<ChartSeries>();
+        public string[] AxeXGraphique { get; set; } = new string[1];
 
         public Stats() { }
 
         /// <summary>
         /// Tache qui s'occupe de mettre à jour le graphique
         /// </summary>
-        public async Task UpdateGraph()
+        public async Task MiseAJourGraphique()
         {
             // On valide que les dates sont valide
-            if(StartDate >= EndDate)
+            if(DateDebut >= DateFin)
             {
                 Snackbar.Add("La date de fin doit être supérieure à celle de début", MudBlazor.Severity.Error);
                 return;
             }
 
             // Validation de l'évènement ainsi que de l'unité de temps
-            if(string.IsNullOrEmpty(Event) || string.IsNullOrEmpty(GraphTime))
+            if(string.IsNullOrEmpty(Evenement) || string.IsNullOrEmpty(TempsGraphique))
             {
                 Snackbar.Add("Vous devez spécifier un évenement et une unité de temps", MudBlazor.Severity.Error);
                 return;
@@ -101,16 +101,16 @@ namespace MaisonConnecteBlazor.Pages
             await InvokeAsync(SpinnerService.Show);
 
             // On met a jour le graphique selon l'unité de temps
-            switch(GraphTime)
+            switch(TempsGraphique)
             {
                 case "day":
-                    await UpdateGraphDay();
+                    await MiseAJourGraphiqueJour();
                     break;
                 case "week":
-                    await UpdateGraphWeek();
+                    await MiseAJourGraphiqueSemaine();
                     break;
                 case "month":
-                    await UpdateGraphMonth();
+                    await MiseAJourGraphiqueMois();
                     break;
             }
 
@@ -120,53 +120,53 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui met à jour le graphique selon l'unité de temps (jour)
         /// </summary>
-        public async Task UpdateGraphDay()
+        public async Task MiseAJourGraphiqueJour()
         {
             // Initialise nos listes
-            ChartData.Clear();
-            List<string> XAxis = new List<string>();
-            List<double> ChartDataDouble = new List<double>();
+            DonneesGraphique.Clear();
+            List<string> AxeX = new List<string>();
+            List<double> DonneesGraphiqueDouble = new List<double>();
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<StatsWrapper> stats = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Event && maisonEvent.Date >= StartDate && maisonEvent.Date <= EndDate).GroupBy(row => row.Date.Date).Select(group => new StatsWrapper(){ Date = group.Key, Count = group.Count() }).ToListAsync();
+            List<EmballageStatistiques> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).GroupBy(row => row.Date.Date).Select(group => new EmballageStatistiques(){ Date = group.Key, Quantite = group.Count() }).ToListAsync();
 
             // On calcule la différence de jours
-            TimeSpan differenceOfDays = (TimeSpan)(EndDate! - StartDate!);
-            DateTime startDateAxis = (DateTime)EndDate!;
+            TimeSpan differencesDeJours = (TimeSpan)(DateFin! - DateDebut!);
+            DateTime dateDebutAxe = (DateTime)DateFin!;
 
             // On valide qu'il n'y a pas plus de 14 jours
-            if(differenceOfDays.TotalDays > 14)
+            if(differencesDeJours.TotalDays > 14)
             {
                 // On commence il y a 14 jours
-                startDateAxis = startDateAxis.AddDays(-13);
+                dateDebutAxe = dateDebutAxe.AddDays(-13);
 
                 // On boucle dans les jours
                 for(int i = 0; i < 14; i++)
                 {
-                    ChartDataDouble.Add(GetChartDataDayCount(ref stats, startDateAxis.Date));
-                    XAxis.Add(startDateAxis.ToString("MM/dd"));
-                    startDateAxis = startDateAxis.AddDays(1);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueJourCompteur(ref statistiques, dateDebutAxe.Date));
+                    AxeX.Add(dateDebutAxe.ToString("MM/dd"));
+                    dateDebutAxe = dateDebutAxe.AddDays(1);
                 }
             } else
             {
                 // On commence à la date de début
-                startDateAxis = startDateAxis.AddDays(-differenceOfDays.TotalDays);
+                dateDebutAxe = dateDebutAxe.AddDays(-differencesDeJours.TotalDays);
 
                 // On boucle dans les jours
-                for(int i = 0; i < differenceOfDays.TotalDays; i++)
+                for(int i = 0; i < differencesDeJours.TotalDays; i++)
                 {
-                    ChartDataDouble.Add(GetChartDataDayCount(ref stats, startDateAxis.Date));
-                    XAxis.Add(startDateAxis.ToString("MM/dd"));
-                    startDateAxis = startDateAxis.AddDays(1);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueJourCompteur(ref statistiques, dateDebutAxe.Date));
+                    AxeX.Add(dateDebutAxe.ToString("MM/dd"));
+                    dateDebutAxe = dateDebutAxe.AddDays(1);
                 }
             }
 
             // On ajoute les statistiques dans les données du graphique
-            ChartData.Add(new ChartSeries() { Name = EventMap[Event], Data = ChartDataDouble.ToArray() });
+            DonneesGraphique.Add(new ChartSeries() { Name = EventMap[Evenement], Data = DonneesGraphiqueDouble.ToArray() });
 
             // On met l'axe des X sous forme de tableau de string
-            GraphXAxis = XAxis.ToArray();
+            AxeXGraphique = AxeX.ToArray();
 
             // On met à jour le graphique
             await InvokeAsync(StateHasChanged);
@@ -175,54 +175,54 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui met à jour le graphique selon l'unité de temps (semaine)
         /// </summary>
-        public async Task UpdateGraphWeek()
+        public async Task MiseAJourGraphiqueSemaine()
         {
             // Initialise nos listes
-            ChartData.Clear();
-            List<string> XAxis = new List<string>();
-            List<double> ChartDataDouble = new List<double>();
+            DonneesGraphique.Clear();
+            List<string> AxeX = new List<string>();
+            List<double> DonneesGraphiqueDouble = new List<double>();
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<IDStatsWrapper> stats = context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Event && maisonEvent.Date >= StartDate && maisonEvent.Date <= EndDate).AsEnumerable().GroupBy(row => GetWeekIndex(row.Date.Date)).Select(group => new IDStatsWrapper() { ID = group.Key, Count = group.Count() }).ToList();
+            List<EmballageStatistiquesID> statistiques = context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).AsEnumerable().GroupBy(row => ObtenirIndexSemaine(row.Date.Date)).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToList();
 
             // On calcul la différence de jours
-            TimeSpan differenceOfDays = (TimeSpan)(EndDate! - StartDate!);
-            DateTime startDateAxis = (DateTime)EndDate!;
+            TimeSpan differenceDeJours = (TimeSpan)(DateFin! - DateDebut!);
+            DateTime dateDebutAxe = (DateTime)DateFin!;
 
             // On valide si il y a plus de 12 semaines
-            if ((differenceOfDays.TotalDays / 7) > 12)
+            if ((differenceDeJours.TotalDays / 7) > 12)
             {
                 // On commence 12 semaines dans le passée
-                startDateAxis = startDateAxis.AddDays(-(11 * 7));
+                dateDebutAxe = dateDebutAxe.AddDays(-(11 * 7));
 
                 // On boucle dans les semaines
                 for (int i = 0; i < 12; i++)
                 {
-                    ChartDataDouble.Add(GetChartDataIndexCount(ref stats, GetWeekIndex(startDateAxis)));
-                    XAxis.Add("Sem. " + GetWeekIndex(startDateAxis));
-                    startDateAxis = startDateAxis.AddDays(7);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueIndexCompteur(ref statistiques, ObtenirIndexSemaine(dateDebutAxe)));
+                    AxeX.Add("Sem. " + ObtenirIndexSemaine(dateDebutAxe));
+                    dateDebutAxe = dateDebutAxe.AddDays(7);
                 }
             }
             else
             {
                 // On commence à la date de début
-                startDateAxis = startDateAxis.AddDays(-differenceOfDays.TotalDays);
+                dateDebutAxe = dateDebutAxe.AddDays(-differenceDeJours.TotalDays);
 
                 // On boucle dans les semaines
-                for (int i = 0; i < Math.Ceiling(differenceOfDays.TotalDays / 7); i++)
+                for (int i = 0; i < Math.Ceiling(differenceDeJours.TotalDays / 7); i++)
                 {
-                    ChartDataDouble.Add(GetChartDataIndexCount(ref stats, GetWeekIndex(startDateAxis)));
-                    XAxis.Add("Sem. " + GetWeekIndex(startDateAxis));
-                    startDateAxis = startDateAxis.AddDays(7);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueIndexCompteur(ref statistiques, ObtenirIndexSemaine(dateDebutAxe)));
+                    AxeX.Add("Sem. " + ObtenirIndexSemaine(dateDebutAxe));
+                    dateDebutAxe = dateDebutAxe.AddDays(7);
                 }
             }
 
             // On ajoute les statistiques dans les données du graphique
-            ChartData.Add(new ChartSeries() { Name = EventMap[Event], Data = ChartDataDouble.ToArray() });
+            DonneesGraphique.Add(new ChartSeries() { Name = EventMap[Evenement], Data = DonneesGraphiqueDouble.ToArray() });
 
             // On met l'axe des X sous forme de tableau de string
-            GraphXAxis = XAxis.ToArray();
+            AxeXGraphique = AxeX.ToArray();
 
             // On met à jour le graphique
             await InvokeAsync(StateHasChanged);
@@ -231,54 +231,54 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui met à jour le graphique selon l'unité de temps (mois)
         /// </summary>
-        public async Task UpdateGraphMonth()
+        public async Task MiseAJourGraphiqueMois()
         {
             // Initialise nos listes
-            ChartData.Clear();
-            List<string> XAxis = new List<string>();
-            List<double> ChartDataDouble = new List<double>();
+            DonneesGraphique.Clear();
+            List<string> AxeX = new List<string>();
+            List<double> DonneesGraphiqueDouble = new List<double>();
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<IDStatsWrapper> stats = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Event && maisonEvent.Date >= StartDate && maisonEvent.Date <= EndDate).GroupBy(row => row.Date.Date.Month).Select(group => new IDStatsWrapper() { ID = group.Key, Count = group.Count() }).ToListAsync();
+            List<EmballageStatistiquesID> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).GroupBy(row => row.Date.Date.Month).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToListAsync();
 
             // Calcul de la différence de mois
-            int monthDifference = EndDate!.Value.Year * 12 + EndDate!.Value.Month - (StartDate!.Value.Year * 12 + StartDate!.Value.Month);
-            DateTime startDateAxis = (DateTime)EndDate!;
+            int differenceMois = DateFin!.Value.Year * 12 + DateFin!.Value.Month - (DateDebut!.Value.Year * 12 + DateDebut!.Value.Month);
+            DateTime dateDebutAxis = (DateTime)DateFin!;
 
             // Si la différence des mois est supérieur à 12, on prends les 12 premiers mois
-            if (monthDifference > 12)
+            if (differenceMois > 12)
             {
                 // On met la date selon le début
-                startDateAxis = startDateAxis.AddMonths(-11);
+                dateDebutAxis = dateDebutAxis.AddMonths(-11);
 
                 // On boucle pour chaque mois 
                 for (int i = 0; i < 12; i++)
                 {
-                    ChartDataDouble.Add(GetChartDataIndexCount(ref stats, startDateAxis.Date.Month));
-                    XAxis.Add(MonthMap[startDateAxis.Date.Month]);
-                    startDateAxis = startDateAxis.AddMonths(1);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueIndexCompteur(ref statistiques, dateDebutAxis.Date.Month));
+                    AxeX.Add(CarteMois[dateDebutAxis.Date.Month]);
+                    dateDebutAxis = dateDebutAxis.AddMonths(1);
                 }
             }
             else // Sinon on fait les mois entre les deux dates sélectionnés
             {
                 // On met la date selon le début
-                startDateAxis = startDateAxis.AddMonths(-monthDifference);
+                dateDebutAxis = dateDebutAxis.AddMonths(-differenceMois);
 
                 // On boucle pour chaque mois 
-                for (int i = 0; i < monthDifference + 1; i++)
+                for (int i = 0; i < differenceMois + 1; i++)
                 {
-                    ChartDataDouble.Add(GetChartDataIndexCount(ref stats, startDateAxis.Date.Month));
-                    XAxis.Add(MonthMap[startDateAxis.Date.Month]);
-                    startDateAxis = startDateAxis.AddMonths(1);
+                    DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueIndexCompteur(ref statistiques, dateDebutAxis.Date.Month));
+                    AxeX.Add(CarteMois[dateDebutAxis.Date.Month]);
+                    dateDebutAxis = dateDebutAxis.AddMonths(1);
                 }
             }
 
             // On ajoute les statistiques dans les données du graphique
-            ChartData.Add(new ChartSeries() { Name = EventMap[Event], Data = ChartDataDouble.ToArray() });
+            DonneesGraphique.Add(new ChartSeries() { Name = EventMap[Evenement], Data = DonneesGraphiqueDouble.ToArray() });
 
             // On met l'axe des X sous forme de tableau de string
-            GraphXAxis = XAxis.ToArray();
+            AxeXGraphique = AxeX.ToArray();
 
             // On met à jour le graphique
             await InvokeAsync(StateHasChanged);
@@ -287,35 +287,35 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui permet d'obtenir l'index de semaine d'une date
         /// </summary>
-        /// <param name="time">DateTime, Date qu'on veut savoir l'index de semaine</param>
+        /// <param name="temps">DateTime, Date qu'on veut savoir l'index de semaine</param>
         /// <returns>int, l'index de la semaine dans l'année</returns>
-        private int GetWeekIndex(DateTime time)
+        private int ObtenirIndexSemaine(DateTime temps)
         {
             // On obtient le jour de la semaine
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            DayOfWeek jour = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(temps);
             
             // Formattage pour toujours avoir le bon index
-            if(day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            if(jour >= DayOfWeek.Monday && jour <= DayOfWeek.Wednesday)
             {
-                time = time.AddDays(3);
+                temps = temps.AddDays(3);
             }
 
             // On retourne l'index
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(temps, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
         /// <summary>
         /// Méthode qui sert à obtenir les statistique à partir d'une Date
         /// </summary>
-        /// <param name="stats">ref List, Référence d'une liste contenant les statistiques</param>
+        /// <param name="statistiques">ref List, Référence d'une liste contenant les statistiques</param>
         /// <param name="date">DateTime, Date à chercher</param>
         /// <returns>int, La quantité de l'évenement, si introuvable on retourne 0</returns>
-        private int GetChartDataDayCount(ref List<StatsWrapper> stats, DateTime date)
+        private int ObtenirDonneesGraphiqueJourCompteur(ref List<EmballageStatistiques> statistiques, DateTime date)
         {
-            StatsWrapper? statsWrapper = stats.SingleOrDefault(stat => stat.Date.Date == date.Date);
-            if (statsWrapper != null)
+            EmballageStatistiques? emballageStatistiques = statistiques.SingleOrDefault(stat => stat.Date.Date == date.Date);
+            if (emballageStatistiques != null)
             {
-                return statsWrapper.Count;
+                return emballageStatistiques.Quantite;
             }
             else
             {
@@ -326,15 +326,15 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui sert à obtenir les statistique à partir d'un ID
         /// </summary>
-        /// <param name="stats">ref List, Référence d'une liste contenant les statistiques</param>
+        /// <param name="statistiques">ref List, Référence d'une liste contenant les statistiques</param>
         /// <param name="Index">int, Index à chercher</param>
         /// <returns>int, La quantité de l'évenement, si introuvable on retourne 0</returns>
-        private int GetChartDataIndexCount(ref List<IDStatsWrapper> stats, int Index)
+        private int ObtenirDonneesGraphiqueIndexCompteur(ref List<EmballageStatistiquesID> statistiques, int Index)
         {
-            IDStatsWrapper? statsWrapper = stats.SingleOrDefault(stat => stat.ID == Index);
-            if (statsWrapper != null)
+            EmballageStatistiquesID? emballageStatistiques = statistiques.SingleOrDefault(stat => stat.ID == Index);
+            if (emballageStatistiques != null)
             {
-                return statsWrapper.Count;
+                return emballageStatistiques.Quantite;
             }
             else
             {

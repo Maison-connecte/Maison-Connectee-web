@@ -15,7 +15,7 @@ namespace MaisonConnecteBlazor.Pages
         // Initialisation des variables
         [Parameter]
         public int? ID { get; set; }
-        private byte[]? VideoStream;
+        private byte[]? FluxVideo;
 
         /// <summary>
         /// Méthode qui s'éxecute au moment de l'initialisation de la page
@@ -35,7 +35,7 @@ namespace MaisonConnecteBlazor.Pages
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             // On obtient la vidéo
-            await FetchVideo();
+            await ObtenirVideo();
 
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -43,7 +43,7 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui obtient la vidéo et la fait jouer sur la page
         /// </summary>
-        public async Task FetchVideo()
+        public async Task ObtenirVideo()
         {
             // Obtention de la vidéo
             DBConnect context = new DBConnect();
@@ -56,9 +56,9 @@ namespace MaisonConnecteBlazor.Pages
             } else
             {
                 // On montre la vidéo
-                VideoStream = enregistrement.FluxVideo;
-                string url = await JSRuntime.InvokeAsync<string>("createVideoUrl", VideoStream);
-                await JSRuntime.InvokeVoidAsync("setVideoSource", "videoPlayback", url);
+                FluxVideo = enregistrement.FluxVideo;
+                string url = await JSRuntime.InvokeAsync<string>("creeURLVideo", FluxVideo);
+                await JSRuntime.InvokeVoidAsync("definirSourceVideo", "lecteurVideo", url);
 
                 // On enlève le chargement
                 await InvokeAsync(SpinnerService.Hide);
@@ -68,7 +68,7 @@ namespace MaisonConnecteBlazor.Pages
         /// <summary>
         /// Méthode qui retourne l'utilisateur à la page "Galerie Vidéo"
         /// </summary>
-        public void GoBack()
+        public void Retour()
         {
             NavigationManager.NavigateTo("videos");
         }

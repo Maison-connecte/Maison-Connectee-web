@@ -6,12 +6,12 @@ namespace MaisonConnecteBlazor.Components.Includes
     /// <summary>
     /// Enum pour toutes les pages disponibles
     /// </summary>
-    public enum HeaderLinks
+    public enum LiensHeader
     {
-        HOME,
+        ACCUEIL,
         VIDEOS,
         STATS,
-        MANAGE,
+        GESTION,
     }
 
     /// <summary>
@@ -20,17 +20,17 @@ namespace MaisonConnecteBlazor.Components.Includes
     public partial class MaisonConnecteHeader : MaisonConnecteBase
     {
         // Identifiant pour chaque page
-        public const string VideosIdentifier = "videos";
-        public const string StatsIdentifier = "stats";
-        public const string ManageIdentifier = "manage";
+        public const string VideosIdentifiant = "videos";
+        public const string StatsIdentifiant = "stats";
+        public const string GestionIdentifiant = "manage";
 
         // Initialisation des variables
-        public Dictionary<HeaderLinks, bool> ActivePage { get; set; } = new Dictionary<HeaderLinks, bool>();
-        public bool DrawerOpened { get; set; } = false;
+        public Dictionary<LiensHeader, bool> PageActive { get; set; } = new Dictionary<LiensHeader, bool>();
+        public bool TiroirOuvert { get; set; } = false;
 
         protected override void OnParametersSet()
         {
-            CheckActivePage();
+            RegarderPageActive();
 
             base.OnParametersSet();
         }
@@ -38,52 +38,52 @@ namespace MaisonConnecteBlazor.Components.Includes
         /// <summary>
         /// Méthode qui sert a valider la page où l'utilisateur se trouve présentement
         /// </summary>
-        private void CheckActivePage()
+        private void RegarderPageActive()
         {
             // Initialisation de la page active
-            ActivePage = new Dictionary<HeaderLinks, bool>();
+            PageActive = new Dictionary<LiensHeader, bool>();
 
-            foreach (HeaderLinks header in Enum.GetValues(typeof(HeaderLinks)))
+            foreach (LiensHeader header in Enum.GetValues(typeof(LiensHeader)))
             {
-                ActivePage[header] = false;
+                PageActive[header] = false;
             }
 
             // Manipulation de strings pour trouver la page que l'utilisateur se trouve présentement
             string url = NavigationManager.Uri.Replace("www", "").Replace("http://", "").Replace("https://", "");
-            int indexOfSlash = url.IndexOf("/");
+            int indexDuSlash = url.IndexOf("/");
 
-            if (indexOfSlash == -1)
+            if (indexDuSlash == -1)
             {
-                ActivePage[HeaderLinks.HOME] = true;
+                PageActive[LiensHeader.ACCUEIL] = true;
             }
             else
             {
                 int compteur = url.Count(character => character == '/');
 
-                string identifier;
+                string identifiant;
                 if (compteur == 1)
                 {
-                    identifier = url.Substring(indexOfSlash + 1);
+                    identifiant = url.Substring(indexDuSlash + 1);
                 }
                 else
                 {
                     int secondIndex = url.IndexOfNth("/", 2);
-                    identifier = url.Substring(indexOfSlash + 1, secondIndex - 1 - indexOfSlash);
+                    identifiant = url.Substring(indexDuSlash + 1, secondIndex - 1 - indexDuSlash);
                 }
 
-                switch (identifier)
+                switch (identifiant)
                 {
                     case "":
-                        ActivePage[HeaderLinks.HOME] = true;
+                        PageActive[LiensHeader.ACCUEIL] = true;
                         break;
-                    case VideosIdentifier:
-                        ActivePage[HeaderLinks.VIDEOS] = true;
+                    case VideosIdentifiant:
+                        PageActive[LiensHeader.VIDEOS] = true;
                         break;
-                    case StatsIdentifier:
-                        ActivePage[HeaderLinks.STATS] = true;
+                    case StatsIdentifiant:
+                        PageActive[LiensHeader.STATS] = true;
                         break;
-                    case ManageIdentifier:
-                        ActivePage[HeaderLinks.MANAGE] = true;
+                    case GestionIdentifiant:
+                        PageActive[LiensHeader.GESTION] = true;
                         break;
                     default:
                         break;
@@ -96,9 +96,9 @@ namespace MaisonConnecteBlazor.Components.Includes
         /// <summary>
         /// Méthode qui ouvre/ferme le "drawer" utilisable sur mobile
         /// </summary>
-        private void ToggleDrawer()
+        private void BasculerTiroir()
         {
-            DrawerOpened = !DrawerOpened;
+            TiroirOuvert = !TiroirOuvert;
         }
     }
 }

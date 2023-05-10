@@ -14,14 +14,14 @@
         /// <returns>int, L'index du caractère</returns>
         public static int IndexOfNth(this string str, char character, int occurence)
         {
-            int occurenceCount = 0;
+            int compteurOccurence = 0;
             for (int i = 0; i < str.Length; i++)
             {
                 if (str[i] == character)
                 {
-                    occurenceCount++;
+                    compteurOccurence++;
 
-                    if (occurenceCount == occurence)
+                    if (compteurOccurence == occurence)
                     {
                         return i;
                     }

@@ -7,32 +7,32 @@
     </div>
     <nav>
         <div id="headerLinksContainer" class="desktopHeader">
-            @if (ActivePage.Count > 0)
+            @if (PageActive.Count > 0)
             {
-                <a class="headerLink" href="/"><div class="headerLinkContainer @(ActivePage[HeaderLinks.HOME] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Accueil</div></div></a>
-                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(ActivePage[HeaderLinks.VIDEOS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Vidéos</div></div></a>
-                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(ActivePage[HeaderLinks.STATS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Statistiques</div></div></a>
-                <a class="headerLink" href="/manage"><div class="headerLinkContainer @(ActivePage[HeaderLinks.MANAGE] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Gestion</div></div></a>
+                <a class="headerLink" href="/"><div class="headerLinkContainer @(PageActive[LiensHeader.ACCUEIL] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Accueil</div></div></a>
+                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(PageActive[LiensHeader.VIDEOS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Vidéos</div></div></a>
+                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(PageActive[LiensHeader.STATS] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Statistiques</div></div></a>
+                <a class="headerLink" href="/manage"><div class="headerLinkContainer @(PageActive[LiensHeader.GESTION] ? "headerLinkCurrent" : "")"><div class="headerLinkText">Gestion</div></div></a>
             }
         </div>
 
         <div id="headerRightContainer" class="mobileHeader">
-            <a class="headerLink" href="javascript:;" role="button" @onclick="ToggleDrawer" style="width: 140px !important;">
+            <a class="headerLink" href="javascript:;" role="button" @onclick="BasculerTiroir" style="width: 140px !important;">
                 <div class="headerLinkContainer">
                     <MudIcon Icon="@Icons.Material.Filled.Dehaze"></MudIcon>
                 </div>
             </a>
         </div>
 
-        <MudDrawer @bind-Open="@DrawerOpened" Anchor="Anchor.Top" Elevation="1" Variant="DrawerVariant.Temporary">
+        <MudDrawer @bind-Open="@TiroirOuvert" Anchor="Anchor.Top" Elevation="1" Variant="DrawerVariant.Temporary">
             <MudDrawerHeader>
                 <MudText Typo="Typo.h6" style="color: #eeeeee;">Maison Connectée</MudText>
             </MudDrawerHeader>
             <MudNavMenu>
-                <a class="headerLink" href="/"><div class="headerLinkContainer @(ActivePage[HeaderLinks.HOME] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Accueil</div></div></a>
-                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(ActivePage[HeaderLinks.VIDEOS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Vidéos</div></div></a>
-                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(ActivePage[HeaderLinks.STATS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Statistiques</div></div></a>
-                <a class="headerLink" href="/manage"><div class="headerLinkContainer @(ActivePage[HeaderLinks.MANAGE] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Gestion</div></div></a>
+                <a class="headerLink" href="/"><div class="headerLinkContainer @(PageActive[LiensHeader.ACCUEIL] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Accueil</div></div></a>
+                <a class="headerLink" href="/videos"><div class="headerLinkContainer @(PageActive[LiensHeader.VIDEOS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Vidéos</div></div></a>
+                <a class="headerLink" href="/stats"><div class="headerLinkContainer @(PageActive[LiensHeader.STATS] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Statistiques</div></div></a>
+                <a class="headerLink" href="/manage"><div class="headerLinkContainer @(PageActive[LiensHeader.GESTION] ? "headerLinkCurrent" : "")" style="width: 100% !important;"><div class="headerLinkText">Gestion</div></div></a>
             </MudNavMenu>
         </MudDrawer>
     </nav>

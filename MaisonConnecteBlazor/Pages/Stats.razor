@@ -14,7 +14,7 @@
     <MudPaper>
         <MudGrid Spacing="8" Justify="Justify.Center">
             <MudItem>
-                <MudSelect T="string" Variant="Variant.Filled" Label="Évenement" @bind-Value="Event" AnchorOrigin="Origin.BottomCenter">
+                <MudSelect T="string" Variant="Variant.Filled" Label="Évenement" @bind-Value="Evenement" AnchorOrigin="Origin.BottomCenter">
                     @foreach(KeyValuePair<string, string> maisonEvent in EventMap)
                     {
                         <MudSelectItem Value="@maisonEvent.Key">@maisonEvent.Value</MudSelectItem>
@@ -22,14 +22,14 @@
                 </MudSelect>
             </MudItem>
             <MudItem>
-                <MudDatePicker Label="Date de début" @bind-Date="StartDate"></MudDatePicker>
+                <MudDatePicker Label="Date de début" @bind-Date="DateDebut"></MudDatePicker>
             </MudItem>
             <MudItem>
-                <MudDatePicker Label="Date de fin" @bind-Date="EndDate"></MudDatePicker>
+                <MudDatePicker Label="Date de fin" @bind-Date="DateFin"></MudDatePicker>
             </MudItem>
             <MudItem>
-                <MudSelect T="string" Variant="Variant.Filled" Label="Unité de temps" @bind-Value="GraphTime" AnchorOrigin="Origin.BottomCenter">
-                    @foreach (KeyValuePair<string, string> temps in TimeMap)
+                <MudSelect T="string" Variant="Variant.Filled" Label="Unité de temps" @bind-Value="TempsGraphique" AnchorOrigin="Origin.BottomCenter">
+                    @foreach (KeyValuePair<string, string> temps in CarteTemps)
                     {
                         <MudSelectItem Value="@temps.Key">@temps.Value</MudSelectItem>
                     }
@@ -37,15 +37,15 @@
             </MudItem>
 
             <MudItem style="display: flex;">
-                <MudButton Variant="Variant.Outlined" Color="Color.Info" @onclick="UpdateGraph">Mettre à jour</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Info" @onclick="MiseAJourGraphique">Mettre à jour</MudButton>
             </MudItem>
         </MudGrid>
     </MudPaper>
 
     <div style="margin-top: 60px;">
-        @if (ChartData.Count > 0)
+        @if (DonneesGraphique.Count > 0)
         {
-            <MudChart ChartType="ChartType.Bar" ChartSeries="@ChartData" XAxisLabels="@GraphXAxis" Width="100%" Height="500px"></MudChart>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@DonneesGraphique" XAxisLabels="@AxeXGraphique" Width="100%" Height="500px"></MudChart>
         }
     </div>
 </MudContainer>

@@ -22,7 +22,7 @@ namespace MaisonConnecteBlazor.Database
         /// </summary>
         public DBConnect()
         {
-            _db = new MaisonConnecteContext(new MSSQLConnection(ConfigManager.CurrentConfig.Server, ConfigManager.CurrentConfig.User, ConfigManager.CurrentConfig.Password, ConfigManager.CurrentConfig.Database));
+            _db = new MaisonConnecteContext(new MSSQLConnection(ConfigManager.ConfigurationPresente.Serveur, ConfigManager.ConfigurationPresente.Utilisateur, ConfigManager.ConfigurationPresente.MotDePasse, ConfigManager.ConfigurationPresente.BD));
         }
 
         /// <summary>

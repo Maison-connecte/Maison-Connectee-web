@@ -1,8 +1,8 @@
 {
-  "Server": "ThuGapySV",
-  "User": "thugapy",
-  "Password": "thug2727",
-  "Database": "maison_connecte3",
-  "VideoFeedIP": "24.122.220.145",
-  "PortFluxVideo": 0
+  "Serveur": "ThuGapySV",
+  "Utilisateur": "thugapy",
+  "MotDePasse": "thug2727",
+  "BD": "maison_connecte3",
+  "IPFluxVideo": "24.122.220.145",
+  "PortFluxVideo": 8010
 }

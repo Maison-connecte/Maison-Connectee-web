@@ -11,14 +11,14 @@ namespace MaisonConnecteBlazor.Pages
     public partial class Management : MaisonConnecteBase
     {
         // Information de connexion et des topics MQTT
-        public const string Server = "test.mosquitto.org";
-        public const int ServerPort = 1883;
-        public const string ColorTopic = "colordylan";
-        public const string LEDEnableTopic = "enable";
+        public const string Serveur = "test.mosquitto.org";
+        public const int PortServeur = 1883;
+        public const string SujetCouleur = "couleur_led_divertissement";
+        public const string SujetAllumeLED = "allumer_led_divertissement";
 
         // Initialiser des variables
         public bool LEDAllume { get; set; } = true;
-        public MudColor Color { get; set; } = "#FF0000FF";
+        public MudColor Couleur { get; set; } = "#FF0000FF";
 
         /// <summary>
         /// Méthode envoyant les données de la page à MQTT
@@ -26,37 +26,37 @@ namespace MaisonConnecteBlazor.Pages
         public async Task SendMQTTData()
         {
             // Formattage de l'information à envoyer
-            float Intensite = (Color.A / 255f);
-            int R = LEDAllume ? (int)(Color.R * Intensite) : 0;
-            int G = LEDAllume ? (int)(Color.G * Intensite) : 0;
-            int B = LEDAllume ? (int)(Color.B * Intensite) : 0;
-            string ColorData = string.Join("/", new List<string>() { R.ToString(), G.ToString(), B.ToString(), LEDAllume ? "1" : "0"});
+            float Intensite = (Couleur.A / 255f);
+            int R = LEDAllume ? (int)(Couleur.R * Intensite) : 0;
+            int G = LEDAllume ? (int)(Couleur.G * Intensite) : 0;
+            int B = LEDAllume ? (int)(Couleur.B * Intensite) : 0;
+            string DonneCouleur = string.Join("/", new List<string>() { R.ToString(), G.ToString(), B.ToString(), LEDAllume ? "1" : "0"});
 
             // Création de la connexion avec le serveur
-            MqttClientOptionsBuilder builder = new MqttClientOptionsBuilder();
-            builder.WithClientId(Guid.NewGuid().ToString());
-            builder.WithTcpServer(Server, ServerPort);
+            MqttClientOptionsBuilder constructeur = new MqttClientOptionsBuilder();
+            constructeur.WithClientId(Guid.NewGuid().ToString());
+            constructeur.WithTcpServer(Serveur, PortServeur);
 
             // Création du client MQTT
-            MqttFactory factory = new MqttFactory();
-            IMqttClient client = factory.CreateMqttClient();
+            MqttFactory usine = new MqttFactory();
+            IMqttClient client = usine.CreateMqttClient();
 
             // Connexion au serveur
-            await client.ConnectAsync(builder.Build());
+            await client.ConnectAsync(constructeur.Build());
 
             // Création du message pour la couleur
-            MqttApplicationMessageBuilder ColorBuilder = new MqttApplicationMessageBuilder();
-            ColorBuilder.WithTopic(ColorTopic);
-            ColorBuilder.WithPayload(ColorData);
+            MqttApplicationMessageBuilder ConstructeurCouleur = new MqttApplicationMessageBuilder();
+            ConstructeurCouleur.WithTopic(SujetCouleur);
+            ConstructeurCouleur.WithPayload(DonneCouleur);
 
             // Création du message pour activer/désactiver la LED
-            MqttApplicationMessageBuilder EnabledBuilder = new MqttApplicationMessageBuilder();
-            EnabledBuilder.WithTopic(LEDEnableTopic);
-            EnabledBuilder.WithPayload(LEDAllume ? "1" : "0");
+            MqttApplicationMessageBuilder AllumeConstructeur = new MqttApplicationMessageBuilder();
+            AllumeConstructeur.WithTopic(SujetAllumeLED);
+            AllumeConstructeur.WithPayload(LEDAllume ? "1" : "0");
 
             // Envoie des messages
-            await client.PublishAsync(ColorBuilder.Build());
-            await client.PublishAsync(EnabledBuilder.Build());
+            await client.PublishAsync(ConstructeurCouleur.Build());
+            await client.PublishAsync(AllumeConstructeur.Build());
 
             // Déconnexion du client et montrer un message à l'utilisateur
             await client.DisconnectAsync();

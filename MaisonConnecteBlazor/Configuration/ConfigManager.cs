@@ -11,7 +11,7 @@ namespace MaisonConnecteBlazor.Configuration
         /// <summary>
         /// Config, Config présentement chargée
         /// </summary>
-        public static Config CurrentConfig { get; set; } = new Config();
+        public static Config ConfigurationPresente { get; set; } = new Config();
 
         /// <summary>
         /// Fonction qui sert à initialiser le manager de configuration
@@ -22,12 +22,12 @@ namespace MaisonConnecteBlazor.Configuration
             if (!File.Exists("config.json"))
             {
                 Debug.WriteLine("Fichier de configuration créé");
-                File.WriteAllText("config.json", JsonConvert.SerializeObject(CurrentConfig, Formatting.Indented));
+                File.WriteAllText("config.json", JsonConvert.SerializeObject(ConfigurationPresente, Formatting.Indented));
             }
             else // Sinon on charge la configuration existante
             {
                 Debug.WriteLine("Fichier de configuration chargé");
-                CurrentConfig = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+                ConfigurationPresente = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
             }
         }
     }

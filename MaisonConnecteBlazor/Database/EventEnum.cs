@@ -7,9 +7,9 @@ namespace MaisonConnecteBlazor.Database
     /// </summary>
     public class EventEnum : StringEnum
     {
-        public const string LightOn = "light_on";
-        public const string LightOff = "light_off";
-        public const string LEDColor = "led_color";
-        public const string DoorStatusChanged = "door_status_changed";
+        public const string LumiereAllume = "light_on";
+        public const string LumiereFerme = "light_off";
+        public const string CouleurLED = "led_color";
+        public const string StatusPorteChange = "door_status_changed";
     }
 }

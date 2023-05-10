@@ -14,7 +14,7 @@ namespace MaisonConnecteBlazor.Pages
     public partial class Index : MaisonConnecteBase, IDisposable
     {
         // Initialisation des variables
-        private Socket? clientSocket;
+        private Socket? socketClient;
         public string Image64 { get; set; } = string.Empty;
 
         /// <summary>
@@ -34,21 +34,21 @@ namespace MaisonConnecteBlazor.Pages
             Dispose();
 
             // On crée la connexion au socket
-            string serverIpAddress = ConfigManager.CurrentConfig.VideoFeedIP;
-            int port = ConfigManager.CurrentConfig.VideoFeedPort;
+            string IPServeur = ConfigManager.ConfigurationPresente.IPFluxVideo;
+            int port = ConfigManager.ConfigurationPresente.PortFluxVideo;
 
-            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(serverIpAddress), port);
+            socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint serverEndPoint = new IPEndPoint(IPAddress.Parse(IPServeur), port);
 
             try
             {
                 // On se connecte au socket et on reçoit des données indéfiniement
-                await clientSocket.ConnectAsync(serverEndPoint);
+                await socketClient.ConnectAsync(serverEndPoint);
 
                 byte[]? buffer = new byte[100000000];
                 int bytesReceived;
 
-                while ((bytesReceived = clientSocket.Receive(buffer)) > 0)
+                while ((bytesReceived = socketClient.Receive(buffer)) > 0)
                 {
                     Image64 = string.Concat("data:image/jpeg;base64,", Encoding.ASCII.GetString(buffer, 0, bytesReceived)).Replace("---END_OF_FRAME---", "");
                     UpdateImage();
@@ -57,11 +57,11 @@ namespace MaisonConnecteBlazor.Pages
             }
             catch (SocketException ex) // On attrape les erreurs
             {
-                Debug.WriteLine("Socket exception:" + ex.Message);
+                Debug.WriteLine("Exception du socket:" + ex.Message);
             }
             catch(ObjectDisposedException)
             {
-                Debug.WriteLine("Socket killed");
+                Debug.WriteLine("Socket tué");
             }
             catch(NullReferenceException) { }
             finally
@@ -84,11 +84,11 @@ namespace MaisonConnecteBlazor.Pages
         /// </summary>
         public void Dispose()
         {
-            if (clientSocket != null)
+            if (socketClient != null)
             {
-                clientSocket.Close();
-                clientSocket.Dispose();
-                clientSocket = null;
+                socketClient.Close();
+                socketClient.Dispose();
+                socketClient = null;
 
                 GC.Collect();
             }
