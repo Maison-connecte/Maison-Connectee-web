@@ -4,5 +4,5 @@
   "Password": "thug2727",
   "Database": "maison_connecte3",
   "VideoFeedIP": "24.122.220.145",
-  "VideoFeedPort": 8010
+  "PortFluxVideo": 0
 }
