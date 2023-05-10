@@ -14,7 +14,7 @@ namespace MaisonConnecteBlazor.Pages
         public const string Server = "test.mosquitto.org";
         public const int ServerPort = 1883;
         public const string ColorTopic = "colordylan";
-        public const string LEDEnabledTopic = "enabled";
+        public const string LEDEnableTopic = "enable";
 
         // Initialiser des variables
         public bool LEDAllume { get; set; } = true;
@@ -51,7 +51,7 @@ namespace MaisonConnecteBlazor.Pages
 
             // Création du message pour activer/désactiver la LED
             MqttApplicationMessageBuilder EnabledBuilder = new MqttApplicationMessageBuilder();
-            EnabledBuilder.WithTopic(LEDEnabledTopic);
+            EnabledBuilder.WithTopic(LEDEnableTopic);
             EnabledBuilder.WithPayload(LEDAllume ? "1" : "0");
 
             // Envoie des messages
