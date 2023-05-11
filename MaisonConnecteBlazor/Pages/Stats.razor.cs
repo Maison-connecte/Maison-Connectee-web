@@ -77,6 +77,9 @@ namespace MaisonConnecteBlazor.Pages
         public List<ChartSeries> DonneesGraphique { get; set; } = new List<ChartSeries>();
         public string[] AxeXGraphique { get; set; } = new string[1];
 
+        private DateTime RealDateDebut;
+        private DateTime RealDateFin;
+
         public Stats() { }
 
         /// <summary>
@@ -90,6 +93,11 @@ namespace MaisonConnecteBlazor.Pages
                 Snackbar.Add("La date de fin doit être supérieure à celle de début", MudBlazor.Severity.Error);
                 return;
             }
+
+            RealDateDebut = (DateTime)DateDebut!;
+            RealDateDebut = RealDateDebut.Date;
+            RealDateFin = (DateTime)DateFin!;
+            RealDateFin = RealDateFin.Date;
 
             // Validation de l'évènement ainsi que de l'unité de temps
             if(string.IsNullOrEmpty(Evenement) || string.IsNullOrEmpty(TempsGraphique))
@@ -129,7 +137,7 @@ namespace MaisonConnecteBlazor.Pages
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<EmballageStatistiques> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).GroupBy(row => row.Date.Date).Select(group => new EmballageStatistiques(){ Date = group.Key, Quantite = group.Count() }).ToListAsync();
+            List<EmballageStatistiques> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date.Date >= RealDateDebut && maisonEvent.Date.Date <= RealDateFin).GroupBy(row => row.Date.Date).Select(group => new EmballageStatistiques(){ Date = group.Key, Quantite = group.Count() }).ToListAsync();
 
             // On calcule la différence de jours
             TimeSpan differencesDeJours = (TimeSpan)(DateFin! - DateDebut!);
@@ -184,7 +192,7 @@ namespace MaisonConnecteBlazor.Pages
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<EmballageStatistiquesID> statistiques = context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).AsEnumerable().GroupBy(row => ObtenirIndexSemaine(row.Date.Date)).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToList();
+            List<EmballageStatistiquesID> statistiques = context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date.Date >= RealDateDebut && maisonEvent.Date.Date <= RealDateFin).AsEnumerable().GroupBy(row => ObtenirIndexSemaine(row.Date.Date)).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToList();
 
             // On calcul la différence de jours
             TimeSpan differenceDeJours = (TimeSpan)(DateFin! - DateDebut!);
@@ -240,7 +248,7 @@ namespace MaisonConnecteBlazor.Pages
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<EmballageStatistiquesID> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date >= DateDebut && maisonEvent.Date <= DateFin).GroupBy(row => row.Date.Date.Month).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToListAsync();
+            List<EmballageStatistiquesID> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date.Date >= RealDateDebut && maisonEvent.Date.Date <= RealDateFin).GroupBy(row => row.Date.Date.Month).Select(group => new EmballageStatistiquesID() { ID = group.Key, Quantite = group.Count() }).ToListAsync();
 
             // Calcul de la différence de mois
             int differenceMois = DateFin!.Value.Year * 12 + DateFin!.Value.Month - (DateDebut!.Value.Year * 12 + DateDebut!.Value.Month);

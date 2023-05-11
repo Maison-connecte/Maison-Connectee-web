@@ -1,8 +1,8 @@
 {
-  "Serveur": "ThuGapySV",
+  "Serveur": "localhost",
   "Utilisateur": "thugapy",
-  "MotDePasse": "thug2727",
-  "BD": "maison_connecte3",
+  "MotDePasse": "testpw",
+  "BD": "maison_connecte",
   "IPFluxVideo": "24.122.220.145",
   "PortFluxVideo": 8010
 }
