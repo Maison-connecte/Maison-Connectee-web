@@ -30,7 +30,7 @@ namespace MaisonConnecteBlazor.Pages
             int R = LEDAllume ? (int)(Couleur.R * Intensite) : 0;
             int G = LEDAllume ? (int)(Couleur.G * Intensite) : 0;
             int B = LEDAllume ? (int)(Couleur.B * Intensite) : 0;
-            string DonneCouleur = string.Join("/", new List<string>() { R.ToString(), G.ToString(), B.ToString(), LEDAllume ? "1" : "0"});
+            string DonneCouleur = string.Join("/", new List<string>() { R.ToString(), G.ToString(), B.ToString()});
 
             // Création de la connexion avec le serveur
             MqttClientOptionsBuilder constructeur = new MqttClientOptionsBuilder();
