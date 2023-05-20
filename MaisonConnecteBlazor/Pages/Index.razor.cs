@@ -56,8 +56,8 @@ namespace MaisonConnecteBlazor.Pages
                     if (ImageBase64Valide(imageRecu))
                     {
                         Image64 = string.Concat("data:image/jpeg;base64,", imageRecu);
+                        UpdateImage();
                     }
-                    UpdateImage();
                 }
                 buffer = null;
             }
@@ -87,20 +87,41 @@ namespace MaisonConnecteBlazor.Pages
 
         private bool ImageBase64Valide(string image64)
         {
-            byte[] bytesImage = Convert.FromBase64String(image64);
-            MemoryStream stream = new MemoryStream(bytesImage);
-
+            bool imageValid = false;
+            byte[]? bytesImage = null;
+            MemoryStream? stream = null;
+            Image? imageValidation = null;
             try
             {
-                Image imageValidation = Image.FromStream(stream);
-                imageValidation.Dispose();
-                imageValidation = null;
+                bytesImage = Convert.FromBase64String(image64);
+                stream = new MemoryStream(bytesImage);
 
-                return true;
+                imageValidation = Image.FromStream(stream);
+                
+
+                imageValid = true;
             } catch
             {
-                return false;
+                imageValid = false;
+            } finally
+            {
+                if (imageValidation != null)
+                {
+                    imageValidation.Dispose();
+                    imageValidation = null;
+                }
+
+                if(bytesImage != null)
+                    bytesImage = null;
+
+                if (stream != null)
+                {
+                    stream.Dispose();
+                    stream = null;
+                }
             }
+
+            return imageValid;
         }
 
         /// <summary>
