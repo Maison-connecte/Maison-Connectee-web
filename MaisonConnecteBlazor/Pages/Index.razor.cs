@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using MaisonConnecteBlazor.Components.Base;
 using MaisonConnecteBlazor.Configuration;
+using System.Drawing;
 
 namespace MaisonConnecteBlazor.Pages
 {
@@ -47,10 +48,15 @@ namespace MaisonConnecteBlazor.Pages
 
                 byte[]? buffer = new byte[100000000];
                 int bytesReceived;
+                string imageRecu;
 
                 while ((bytesReceived = socketClient.Receive(buffer)) > 0)
                 {
-                    Image64 = string.Concat("data:image/jpeg;base64,", Encoding.ASCII.GetString(buffer, 0, bytesReceived)).Replace("---END_OF_FRAME---", "");
+                    imageRecu = Encoding.ASCII.GetString(buffer, 0, bytesReceived).Replace("---END_OF_FRAME---", "");
+                    if (ImageBase64Valide(imageRecu))
+                    {
+                        Image64 = string.Concat("data:image/jpeg;base64,", imageRecu);
+                    }
                     UpdateImage();
                 }
                 buffer = null;
@@ -77,6 +83,24 @@ namespace MaisonConnecteBlazor.Pages
         public async void UpdateImage()
         {
             await InvokeAsync(StateHasChanged);
+        }
+
+        private bool ImageBase64Valide(string image64)
+        {
+            byte[] bytesImage = Convert.FromBase64String(image64);
+            MemoryStream stream = new MemoryStream(bytesImage);
+
+            try
+            {
+                Image imageValidation = Image.FromStream(stream);
+                imageValidation.Dispose();
+                imageValidation = null;
+
+                return true;
+            } catch
+            {
+                return false;
+            }
         }
 
         /// <summary>

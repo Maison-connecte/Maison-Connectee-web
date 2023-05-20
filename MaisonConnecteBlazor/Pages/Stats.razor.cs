@@ -2,6 +2,7 @@
 using MaisonConnecteBlazor.Database;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace MaisonConnecteBlazor.Pages
@@ -137,14 +138,19 @@ namespace MaisonConnecteBlazor.Pages
 
             // Obtention des statistiques
             DBConnect context = new DBConnect();
-            List<EmballageStatistiques> statistiques = await context.db.Events.AsNoTracking().Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date.Date >= RealDateDebut && maisonEvent.Date.Date <= RealDateFin).GroupBy(row => row.Date.Date).Select(group => new EmballageStatistiques(){ Date = group.Key, Quantite = group.Count() }).ToListAsync();
+            List<EmballageStatistiques> statistiques = await context.db.Events
+                .AsNoTracking()
+                .Where(maisonEvent => maisonEvent.Event1 == Evenement && maisonEvent.Date.Date >= RealDateDebut && maisonEvent.Date.Date <= RealDateFin)
+                .GroupBy(row => row.Date.Date)
+                .Select(group => new EmballageStatistiques(){ Date = group.Key, Quantite = group.Count() })
+                .ToListAsync();
 
             // On calcule la différence de jours
-            TimeSpan differencesDeJours = (TimeSpan)(DateFin! - DateDebut!);
-            DateTime dateDebutAxe = (DateTime)DateFin!;
+            TimeSpan differencesDeJours = ((DateTime)DateFin!).Date - ((DateTime)DateDebut!).Date;
+            DateTime dateDebutAxe = ((DateTime)DateFin!).Date;
 
             // On valide qu'il n'y a pas plus de 14 jours
-            if(differencesDeJours.TotalDays > 14)
+            if((differencesDeJours.TotalDays + 1) > 14)
             {
                 // On commence il y a 14 jours
                 dateDebutAxe = dateDebutAxe.AddDays(-13);
@@ -162,7 +168,7 @@ namespace MaisonConnecteBlazor.Pages
                 dateDebutAxe = dateDebutAxe.AddDays(-differencesDeJours.TotalDays);
 
                 // On boucle dans les jours
-                for(int i = 0; i < differencesDeJours.TotalDays; i++)
+                for (int i = 0; i <= differencesDeJours.TotalDays; i++)
                 {
                     DonneesGraphiqueDouble.Add(ObtenirDonneesGraphiqueJourCompteur(ref statistiques, dateDebutAxe.Date));
                     AxeX.Add(dateDebutAxe.ToString("MM/dd"));
